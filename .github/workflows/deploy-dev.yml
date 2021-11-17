@@ -26,7 +26,7 @@ jobs:
           sed -i "/BROADCAST_CUSTOM_DRIVER/c BROADCAST_CUSTOM_DRIVER=pusher" .env
           sed -i "/DB_DATABASE/c DB_DATABASE=shopnode_test" .env
           sed -i "/DB_USERNAME/c DB_USERNAME=shopnode_test2021" .env
-          sed -i "/DB_PASSWORD/c DB_PASSWORD=cw9;wWl6@R6&".env
+          sed -i "/DB_PASSWORD/c DB_PASSWORD=cw9;wWl6@R6&" .env
           sed -i "/DEPLOYMENT_KEY/c DEPLOYMENT_KEY=123456" .env
           sed -i "/PREPARE_RELEASE_FILES/c PREPARE_RELEASE_FILES=false" .env
 
