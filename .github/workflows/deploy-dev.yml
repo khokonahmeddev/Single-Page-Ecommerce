@@ -43,6 +43,18 @@ jobs:
         run: |
           rm composer.lock
           composer install
+      - name: Cache Yarn
+        id: yarn-cache
+        uses: actions/cache@v2.1.3
+        with:
+          path: "**/node_modules"
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
+
+      - name: NPM Install
+        run: npm install
+
+      - name: Building Assets
+        run: npm run prod
 
       - name: Generate Application Key 🔑
         run: php artisan key:generate
