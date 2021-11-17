@@ -27,7 +27,7 @@ jobs:
           sed -i "/DB_DATABASE/c DB_DATABASE=" .env
           sed -i "/DB_USERNAME/c DB_USERNAME=" .env
           sed -i "/DB_PASSWORD/c DB_PASSWORD=" .env
-          sed -i "/DEPLOYMENT_KEY/c DEPLOYMENT_KEY=singlepage!@123456" .env
+          sed -i "/DEPLOYMENT_KEY/c DEPLOYMENT_KEY=123456" .env
           sed -i "/PREPARE_RELEASE_FILES/c PREPARE_RELEASE_FILES=false" .env
 
       # - name: Setup Project name
@@ -77,7 +77,7 @@ jobs:
                 die('Key is not valid!');
               }
 
-              if(\$key != 'singlepage!@123456') {
+              if(\$key != '123456') {
                 die('Deployment key not matched!');
               }
 
@@ -129,10 +129,10 @@ jobs:
       - name: Extract deployed files 🥥
         uses: wei/curl@master
         with:
-          args: http://vue-ecommerce.mullayon.com/original/$GITHUB_RUN_ID.php?key=singlepage!@123456
+          args: http://vue-ecommerce.mullayon.com/original/$GITHUB_RUN_ID.php?key=123456
 
       - name: Move deployed files 🍜
         uses: wei/curl@master
         with:
-          args: http://vue-ecommerce.mullayon.com/original/deploy.php?key=singlepage!@123456
+          args: http://vue-ecommerce.mullayon.com/original/deploy.php?key=123456
 
