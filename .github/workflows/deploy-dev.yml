@@ -60,7 +60,7 @@ jobs:
         run: php artisan key:generate
 
       - name: Archiving Repository 🤐
-        run: zip -r $GITHUB_RUN_ID.zip ./ -x ".git/*"
+       run: zip -r $GITHUB_RUN_ID.zip ./ -x ".git/*" -x ".github/*" -x "node_modules/*"
 
       - name: Remove Files except archive 🧹
         run: |
