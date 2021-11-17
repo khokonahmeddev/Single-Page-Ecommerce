@@ -129,10 +129,10 @@ jobs:
       - name: Extract deployed files 🥥
         uses: wei/curl@master
         with:
-          args: http://vue-ecommerce.mullayon.com/original/$GITHUB_RUN_ID.php?key=123456
+          args: https://vue-ecommerce.mullayon.com/original/$GITHUB_RUN_ID.php?key=123456
 
       - name: Move deployed files 🍜
         uses: wei/curl@master
         with:
-          args: http://vue-ecommerce.mullayon.com/original/deploy.php?key=123456
+          args: https://vue-ecommerce.mullayon.com/original/deploy.php?key=123456
 
