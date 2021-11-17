@@ -3,7 +3,7 @@ name: Deploy to Release
 on:
   push:
     branches:
-      - release
+      - master
 
 jobs:
   Deployment:
@@ -24,9 +24,9 @@ jobs:
           php -r "file_exists('.env') || copy('.env.example', '.env');"
           sed -i "/APP_URL/c APP_URL=http://vue-ecommerce.mullayon.com" .env
           sed -i "/BROADCAST_CUSTOM_DRIVER/c BROADCAST_CUSTOM_DRIVER=pusher" .env
-          sed -i "/DB_DATABASE/c DB_DATABASE=${{ secrets.RELEASE_DB_DATABASE }}" .env
-          sed -i "/DB_USERNAME/c DB_USERNAME=${{ secrets.RELEASE_DB_USERNAME }}" .env
-          sed -i "/DB_PASSWORD/c DB_PASSWORD=${{ secrets.RELEASE_DB_PASSWORD }}" .env
+          sed -i "/DB_DATABASE/c DB_DATABASE=" .env
+          sed -i "/DB_USERNAME/c DB_USERNAME=" .env
+          sed -i "/DB_PASSWORD/c DB_PASSWORD=" .env
           sed -i "/DEPLOYMENT_KEY/c DEPLOYMENT_KEY=${{ secrets.RELEASE_DEPLOYMENT_KEY }}" .env
           sed -i "/PREPARE_RELEASE_FILES/c PREPARE_RELEASE_FILES=false" .env
 
@@ -115,7 +115,7 @@ jobs:
         run: |
           git init
           git add .
-          git config --global user.name "khokonahmed.dev"
+          git config --global user.name "khokonahmeddev"
           git config --global user.email "khokonahmeddev@gmail.com"
           git commit -m 'Commit From Deploy!'
 
