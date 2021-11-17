@@ -1,0 +1,100 @@
+name: Generate Update 1.1
+
+on:
+  push:
+    branches:
+      - staging
+
+jobs:
+  Update:
+    name: Deploy Action
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '7.4'
+
+      - name: Checkout old release in old/
+        uses: actions/checkout@v2.3.3
+        with:
+          ref: 'release'
+          path: old
+
+      - name: Git clone previous release  🔏
+        run: |
+          rm -rf .git
+          cd old
+          rm -rf .git
+          composer install --no-dev
+          rm -rf ./node_modules ./.github ./public/css/* ./public/js/* ./public/documentation
+          rm .env.ci .env.example .php_cs.dist .gitignore deploy.php ./public/mix-manifest.json
+          git init
+          git add .
+          git config --global user.name "khorshed"
+          git config --global user.email "khorshed@gain.media"
+          git commit -m 'First Commit'
+
+      - name: Checkout master in new/
+        uses: actions/checkout@v2.3.3
+        with:
+          ref: 'master'
+          path: new
+
+      - name: Generate update and vendor 🔏
+        run: |
+          pwd
+          cd ./new
+          rm -rf .git
+          composer install --no-dev
+          yarn install
+          yarn prod
+          rm -rf ./node_modules ./.github ./public/documentation
+          rm .env.ci .env.example .php_cs.dist .gitignore deploy.php
+          rsync -aru ./ ../old
+          cd ../old
+          git add .
+          git commit -m 'Second Commit'
+          git archive -o update.zip HEAD $(git diff --name-only --diff-filter=ACMRT HEAD^)
+          zip -r mergedVendor.zip vendor/
+          mv update.zip ../
+          mv mergedVendor.zip ../
+
+      - name: Cleanup and prepare for deploy 🧹
+        run: |
+          mv mergedVendor.zip /tmp
+          shopt -s extglob
+          rm -rf !("update.zip")
+          mv /tmp/mergedVendor.zip ./
+          find -path './.*' -delete
+          echo "!mergedVendor.zip" >> .git-ftp-include
+          echo "!update.zip" >> .git-ftp-include
+          ls -a
+
+      - name: Commit For Deploy v1.0.3
+        run: |
+          git init
+          git add .
+          git config --global user.name "khorshed"
+          git config --global user.email "khorshed@gain.media"
+          git commit -m 'Commit From Deploy!'
+
+      - name: FTP Deploy for Fresh Release 💸
+        uses: SamKirkland/FTP-Deploy-Action@3.1.1
+        with:
+          ftp-server: ftp://${{ secrets.TEST_FTP_SERVER }}
+          ftp-username: ${{ secrets.TEST_FTP_USERNAME }}
+          ftp-password: ${{ secrets.TEST_FTP_PASSWORD }}
+
+
+  Notify-Slack:
+    if: ${{ always() }}
+    needs: [ Update ]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: ahmadnassri/action-slack-workflow-notifications@v1
+        with:
+          slack-webhook: ${{ secrets.SLACK_WEBHOOK_URL }}
+          ignore-jobs: Notify-Slack
+
+
